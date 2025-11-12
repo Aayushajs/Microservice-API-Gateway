@@ -9,11 +9,13 @@ dotenv.config();
 
 const app: Application = express();
 
+// trust proxy (important in production behind load balancers)
+app.set('trust proxy', true);
+
 // middlewares
 app.use(cors());
 app.use(helmet());
 app.use(morgan('dev'));
-app.use(express.json()); // JSON parsing
 // Health check route
 app.get("/", (req: Request, res: Response) => {
   res.status(200).json({ message: " API Gateway is running smoothly!" });
@@ -22,24 +24,26 @@ app.get("/", (req: Request, res: Response) => {
 // proxy
 app.use(
   "/userservices",
-  createProxyMiddleware({
+  createProxyMiddleware(({
     target: process.env.USER_SERVICE_URL || "http://localhost:4001",
     changeOrigin: true,
     proxyTimeout: 30000,
     timeout: 30000,
     pathRewrite: { "^/userservices": "" },
-  })
+  } as any))
 );
 
 
 app.use(
   "/order",
-  createProxyMiddleware({
+  createProxyMiddleware(({
     target: process.env.ORDER_SERVICE_URL || "http://localhost:4002",
     changeOrigin: true,
     pathRewrite: { "^/order": "" },
-  })
+  } as any))
 );  
 
 
 export default app;
+
+
