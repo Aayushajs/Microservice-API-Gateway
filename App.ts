@@ -9,7 +9,7 @@ dotenv.config();
 
 const app: Application = express();
 
-// trust proxy (important in production behind load balancers)
+
 app.set('trust proxy', true);
 
 // middlewares
