@@ -13,7 +13,7 @@ const app: Application = express();
 app.use(cors());
 app.use(helmet());
 app.use(morgan('dev'));
-
+app.use(express.json()); // JSON parsing
 // Health check route
 app.get("/", (req: Request, res: Response) => {
   res.status(200).json({ message: " API Gateway is running smoothly!" });
